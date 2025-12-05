@@ -197,14 +197,14 @@ php artisan serve
 ### Credenciales de Prueba
 
 #### Administrador
-- **Email**: `admin@wurger.com`
-- **Contraseña**: `admin123`
+- **Email**: `test@admin.com`
+- **Contraseña**: `Test1234!`
 
 #### Cliente
 - **Email**: `cliente@wurger.com`
 - **Contraseña**: `cliente123`
 
-> ⚠️ **Nota**: Estas credenciales son de ejemplo. Cámbialas en producción.
+> ⚠️ **Nota**: Estas credenciales son para pruebas y desarrollo. Cámbialas en producción.
 
 ### Flujo de Uso
 
