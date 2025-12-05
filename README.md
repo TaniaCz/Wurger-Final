@@ -1,163 +1,365 @@
-# Wurger - Sistema de Gestión Empresarial
+# 🍔 Wurger - Sistema de Gestión para Restaurante
 
-Sistema completo de gestión empresarial desarrollado con Laravel, con diseño moderno y funcionalidades completas.
+<div align="center">
 
-## 🚀 Características
+![Wurger Logo](wurger-front/public/logo.png)
 
-- **Dashboard Moderno**: Panel de control con estadísticas en tiempo real
-- **Gestión de Usuarios**: Sistema completo de usuarios con roles
-- **Gestión de Productos**: Control de inventario y categorías
-- **Sistema de Ventas**: Procesamiento completo de ventas
-- **Gestión de Clientes**: Base de datos de clientes
-- **Sistema de Inventario**: Control de movimientos y stock
-- **Diseño Responsivo**: Interfaz moderna y adaptable
+**Sistema completo de gestión para restaurante de hamburguesas con panel de administración y tienda en línea**
 
-## 📋 Requisitos
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.x-green.svg)](https://spring.io/projects/spring-boot)
+[![React](https://img.shields.io/badge/React-18.x-blue.svg)](https://reactjs.org/)
+[![MySQL](https://img.shields.io/badge/MySQL-8.0-orange.svg)](https://www.mysql.com/)
+[![Laravel](https://img.shields.io/badge/Laravel-10.x-red.svg)](https://laravel.com/)
 
-- PHP 8.1 o superior
-- Composer
-- MySQL 5.7 o superior
-- Node.js y NPM (para assets)
+</div>
 
-## 🛠️ Instalación
+---
 
-1. **Clonar el repositorio**
-   ```bash
-   git clone [url-del-repositorio]
-   cd Wurger
-   ```
+## 📋 Tabla de Contenidos
 
-2. **Instalar dependencias**
-   ```bash
-   composer install
-   npm install
-   ```
+- [Descripción](#-descripción)
+- [Características](#-características)
+- [Tecnologías](#-tecnologías)
+- [Instalación](#-instalación)
+- [Uso](#-uso)
+- [Estructura del Proyecto](#-estructura-del-proyecto)
+- [Capturas de Pantalla](#-capturas-de-pantalla)
+- [Contribuir](#-contribuir)
+- [Licencia](#-licencia)
 
-3. **Configurar variables de entorno**
-   ```bash
-   cp .env.example .env
-   php artisan key:generate
-   ```
+---
 
-4. **Configurar base de datos**
-   - Crear base de datos MySQL llamada `Wurger`
-   - Configurar credenciales en `.env`:
-   ```env
-   DB_CONNECTION=mysql
-   DB_HOST=127.0.0.1
-   DB_PORT=3306
-   DB_DATABASE=Wurger
-   DB_USERNAME=tu_usuario
-   DB_PASSWORD=tu_contraseña
-   ```
+## 📖 Descripción
 
-5. **Ejecutar migraciones y seeders**
-   ```bash
-   php artisan migrate:fresh --seed
-   ```
+**Wurger** es un sistema integral de gestión para restaurantes especializados en hamburguesas. Incluye dos versiones completas:
 
-6. **Compilar assets**
-   ```bash
-   npm run build
-   ```
+1. **Versión Spring Boot + React** (Nueva) - Sistema moderno con diseño premium
+2. **Versión Laravel** (Anterior) - Sistema completo en PHP
 
-7. **Iniciar servidor**
-   ```bash
-   php artisan serve
-   ```
+El sistema permite gestionar productos, pedidos, usuarios, inventario y promociones, con interfaces separadas para administradores y clientes.
 
-## 🔑 Acceso Inicial
+---
 
-- **URL**: http://localhost:8000
-- **Email**: admin@wurger.com
-- **Contraseña**: 123456
+## ✨ Características
+
+### 🔐 Sistema de Autenticación
+- Login y registro de usuarios
+- Roles diferenciados (Administrador / Cliente)
+- Sesiones seguras con prevención de navegación después de logout
+
+### 👨‍💼 Panel de Administración
+- **Gestión de Productos**: CRUD completo con categorías e imágenes
+- **Gestión de Pedidos**: Visualización, actualización de estados, detalles completos
+- **Gestión de Usuarios**: Administración de clientes y permisos
+- **Promociones**: Sistema de descuentos por porcentaje o monto fijo
+- **Alertas de Stock**: Notificaciones de productos con bajo inventario
+- **Reportes**: Estadísticas de ventas, productos más vendidos, inventario
+
+### 🛒 Dashboard de Cliente
+- Catálogo de productos con búsqueda y filtros
+- Carrito de compras interactivo
+- Sistema de promociones activas
+- Historial de pedidos con timestamps
+- Diseño premium con glassmorphism
+- Modo claro/oscuro
+
+### 📊 Gestión de Inventario
+- Control de stock en tiempo real
+- Alertas automáticas de bajo stock
+- Historial de movimientos
+
+---
+
+## 🛠️ Tecnologías
+
+### Versión Spring Boot + React
+
+#### Backend
+- **Java 17+** con Spring Boot 3.x
+- **Spring Data JPA** para persistencia
+- **MySQL 8.0** como base de datos
+- **Lombok** para reducir código boilerplate
+- **Maven** para gestión de dependencias
+
+#### Frontend
+- **React 18** con Vite
+- **React Router** para navegación
+- **Bootstrap 5** para estilos base
+- **Context API** para gestión de estado
+- **Fetch API** para comunicación con backend
+
+### Versión Laravel
+
+- **PHP 8.x** con Laravel 10
+- **Blade Templates** para vistas
+- **Eloquent ORM** para base de datos
+- **MySQL** como base de datos
+
+---
+
+## 📦 Instalación
+
+### Prerrequisitos
+
+- **Java JDK 17+** (para Spring Boot)
+- **Node.js 18+** y npm (para React)
+- **MySQL 8.0+**
+- **Maven** (incluido en el proyecto)
+- **PHP 8.x** y Composer (para Laravel)
+
+### Opción 1: Spring Boot + React (Recomendado)
+
+#### 1. Clonar el Repositorio
+
+```bash
+git clone https://github.com/TaniaCz/Wurger-Final.git
+cd Wurger-Final
+```
+
+#### 2. Configurar Base de Datos
+
+```bash
+# Conectarse a MySQL
+mysql -u root -p
+
+# Importar la base de datos
+mysql -u root -p < database/wurger_export.sql
+```
+
+#### 3. Configurar Backend (Spring Boot)
+
+```bash
+# Copiar archivo de configuración
+cp src/main/resources/application.properties.example src/main/resources/application.properties
+
+# Editar application.properties con tus credenciales
+# spring.datasource.username=root
+# spring.datasource.password=TU_CONTRASEÑA
+```
+
+#### 4. Ejecutar Backend
+
+```bash
+# Compilar y ejecutar
+./mvnw spring-boot:run
+
+# El backend estará disponible en: http://localhost:8080
+```
+
+#### 5. Configurar y Ejecutar Frontend
+
+```bash
+# Ir a la carpeta del frontend
+cd wurger-front
+
+# Instalar dependencias
+npm install
+
+# Ejecutar en modo desarrollo
+npm run dev
+
+# El frontend estará disponible en: http://localhost:5173
+```
+
+### Opción 2: Laravel
+
+```bash
+# Instalar dependencias PHP
+composer install
+
+# Instalar dependencias Node
+npm install
+
+# Copiar archivo de entorno
+cp .env.example .env
+
+# Generar key de aplicación
+php artisan key:generate
+
+# Configurar base de datos en .env
+# DB_DATABASE=Wurger
+# DB_USERNAME=root
+# DB_PASSWORD=tu_contraseña
+
+# Ejecutar migraciones
+php artisan migrate --seed
+
+# Ejecutar servidor
+php artisan serve
+
+# Disponible en: http://localhost:8000
+```
+
+---
+
+## 🚀 Uso
+
+### Credenciales de Prueba
+
+#### Administrador
+- **Email**: `admin@wurger.com`
+- **Contraseña**: `admin123`
+
+#### Cliente
+- **Email**: `cliente@wurger.com`
+- **Contraseña**: `cliente123`
+
+> ⚠️ **Nota**: Estas credenciales son de ejemplo. Cámbialas en producción.
+
+### Flujo de Uso
+
+1. **Acceso**: Visita `http://localhost:5173` (React) o `http://localhost:8000` (Laravel)
+2. **Login**: Ingresa con las credenciales según tu rol
+3. **Administrador**: Gestiona productos, pedidos, usuarios y promociones
+4. **Cliente**: Navega el catálogo, agrega productos al carrito y realiza pedidos
+
+---
 
 ## 📁 Estructura del Proyecto
 
 ```
-Wurger/
-├── app/
-│   ├── Http/Controllers/     # Controladores
-│   └── Models/              # Modelos Eloquent
-├── database/
-│   ├── migrations/          # Migraciones de BD
-│   └── seeders/            # Seeders de datos
-├── resources/
-│   └── views/              # Vistas Blade
-│       ├── layouts/        # Layouts principales
-│       ├── auth/           # Vistas de autenticación
-│       └── dashboard.blade.php
-└── routes/
-    └── web.php             # Rutas web
+Wurger-Final/
+│
+├── 📂 src/main/java/com/Wurger/     # Backend Spring Boot
+│   ├── controller/                   # Controladores REST API
+│   ├── model/                        # Entidades JPA
+│   ├── service/                      # Lógica de negocio
+│   ├── repository/                   # Acceso a datos
+│   ├── dto/                          # Objetos de transferencia
+│   └── config/                       # Configuraciones
+│
+├── 📂 wurger-front/                  # Frontend React
+│   ├── src/
+│   │   ├── pages/                    # Páginas principales
+│   │   │   ├── Admin.jsx             # Panel de administración
+│   │   │   ├── ClientDashboard.jsx   # Dashboard de cliente
+│   │   │   ├── Login.jsx             # Página de login
+│   │   │   └── Register.jsx          # Página de registro
+│   │   ├── components/               # Componentes reutilizables
+│   │   │   ├── admin/                # Componentes del admin
+│   │   │   ├── ProductCard.jsx       # Tarjeta de producto
+│   │   │   └── OrderHistory.jsx      # Historial de pedidos
+│   │   ├── context/                  # Contextos de React
+│   │   │   ├── CartContext.jsx       # Estado del carrito
+│   │   │   └── ThemeContext.jsx      # Tema claro/oscuro
+│   │   └── index.css                 # Estilos globales
+│   └── public/                       # Archivos estáticos
+│
+├── 📂 database/                      # Base de datos
+│   ├── wurger_export.sql             # Exportación completa
+│   ├── schema.sql                    # Solo estructura
+│   ├── sample_data.sql               # Datos de ejemplo
+│   └── README.md                     # Documentación de BD
+│
+├── 📂 app/                           # Laravel (versión anterior)
+├── 📂 resources/views/               # Vistas Blade
+├── 📂 routes/                        # Rutas Laravel
+│
+├── .gitignore                        # Archivos ignorados
+├── pom.xml                           # Dependencias Maven
+├── package.json                      # Dependencias Laravel
+└── README.md                         # Este archivo
 ```
-
-## 🎨 Módulos Disponibles
-
-### 1. Dashboard
-- Estadísticas generales
-- Ventas recientes
-- Productos con stock bajo
-- Acciones rápidas
-
-### 2. Gestión de Usuarios
-- CRUD completo de usuarios
-- Sistema de roles
-- Autenticación segura
-
-### 3. Gestión de Productos
-- Catálogo de productos
-- Control de inventario
-- Categorías de productos
-- Unidades de medida
-
-### 4. Sistema de Ventas
-- Procesamiento de ventas
-- Detalles de venta
-- Formas de pago
-- Descuentos
-
-### 5. Gestión de Clientes
-- Base de datos de clientes
-- Información de contacto
-- Historial de compras
-
-### 6. Sistema de Inventario
-- Movimientos de stock
-- Control de entradas y salidas
-- Alertas de stock bajo
-
-## 🔧 Tecnologías Utilizadas
-
-- **Backend**: Laravel 10
-- **Frontend**: Blade Templates, Bootstrap 5
-- **Base de Datos**: MySQL
-- **Iconos**: Font Awesome 6
-- **Estilos**: CSS3 personalizado
-
-## 📱 Diseño Responsivo
-
-La aplicación está completamente optimizada para:
-- Desktop (1200px+)
-- Tablet (768px - 1199px)
-- Mobile (320px - 767px)
-
-## 🚀 Próximas Funcionalidades
-
-- [ ] Sistema de reportes avanzados
-- [ ] Gráficos interactivos
-- [ ] Notificaciones en tiempo real
-- [ ] API REST
-- [ ] Exportación de datos
-- [ ] Sistema de backup automático
-
-## 📞 Soporte
-
-Para soporte técnico o consultas, contactar al equipo de desarrollo.
-
-## 📄 Licencia
-
-Este proyecto está bajo la Licencia MIT.
 
 ---
 
-**Wurger** - Sistema de Gestión Empresarial Moderno y Eficiente
+## 📸 Capturas de Pantalla
+
+### Dashboard de Cliente
+![Client Dashboard](wurger-front/public/login_background.png)
+
+*Interfaz moderna con diseño glassmorphism, catálogo de productos y carrito de compras*
+
+### Panel de Administración
+*Sistema completo de gestión con reportes, estadísticas y control de inventario*
+
+---
+
+## 🔒 Seguridad
+
+### Archivos Protegidos
+
+Los siguientes archivos **NO** se incluyen en el repositorio por seguridad:
+
+- `application.properties` - Credenciales de base de datos
+- `.env` - Variables de entorno Laravel
+- `node_modules/` - Dependencias de Node
+- Backups de base de datos personales
+
+### Plantillas Incluidas
+
+- ✅ `application.properties.example` - Template para Spring Boot
+- ✅ `.env.example` - Template para Laravel
+
+---
+
+## 🤝 Contribuir
+
+¡Las contribuciones son bienvenidas! Para contribuir:
+
+1. **Fork** el proyecto
+2. Crea una **rama** para tu feature (`git checkout -b feature/AmazingFeature`)
+3. **Commit** tus cambios (`git commit -m 'Add: Amazing Feature'`)
+4. **Push** a la rama (`git push origin feature/AmazingFeature`)
+5. Abre un **Pull Request**
+
+### Guía de Commits
+
+Usa prefijos descriptivos:
+- `feat:` - Nueva funcionalidad
+- `fix:` - Corrección de bugs
+- `docs:` - Cambios en documentación
+- `style:` - Cambios de formato/estilo
+- `refactor:` - Refactorización de código
+- `test:` - Agregar o modificar tests
+
+---
+
+## 📝 Documentación Adicional
+
+- [Configuración de Base de Datos](database/README.md)
+- [API Documentation](#) *(próximamente)*
+- [Guía de Despliegue](#) *(próximamente)*
+
+---
+
+## 🐛 Reporte de Bugs
+
+Si encuentras un bug, por favor:
+
+1. Verifica que no esté ya reportado en [Issues](https://github.com/TaniaCz/Wurger-Final/issues)
+2. Crea un nuevo issue con:
+   - Descripción clara del problema
+   - Pasos para reproducirlo
+   - Comportamiento esperado vs actual
+   - Screenshots si es posible
+
+---
+
+## 📄 Licencia
+
+Este proyecto es privado y pertenece a **Wurger Restaurant Management System**.
+
+---
+
+## 👥 Autores
+
+- **Tania** - *Desarrollo Principal* - [TaniaCz](https://github.com/TaniaCz)
+
+---
+
+## 🙏 Agradecimientos
+
+- Diseño inspirado en las mejores prácticas de UI/UX modernas
+- Comunidad de Spring Boot y React por la documentación
+- Bootstrap por los componentes base
+
+---
+
+<div align="center">
+
+**¿Te gusta el proyecto? ¡Dale una ⭐ en GitHub!**
+
+Hecho con ❤️ para Wurger
+
+</div>
