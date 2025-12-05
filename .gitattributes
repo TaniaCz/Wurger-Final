@@ -1,2 +1,18 @@
+# Combined .gitattributes for Laravel + Spring Boot
+* text=auto
+
+# Laravel specific
+*.blade.php diff=html
+*.css diff=css
+*.html diff=html
+*.md diff=markdown
+*.php diff=php
+
+# Spring Boot specific
 /mvnw text eol=lf
 *.cmd text eol=crlf
+
+# Export ignore
+/.github export-ignore
+CHANGELOG.md export-ignore
+.styleci.yml export-ignore

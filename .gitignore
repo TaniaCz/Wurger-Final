@@ -1,3 +1,6 @@
+# Combined .gitignore for Laravel + Spring Boot + React
+
+### Spring Boot (Java) ###
 HELP.md
 target/
 .mvn/wrapper/maven-wrapper.jar
@@ -32,18 +35,36 @@ build/
 ### VS Code ###
 .vscode/
 
+### Laravel (PHP) ###
+/node_modules
+/public/build
+/public/hot
+/public/storage
+/storage/*.key
+/vendor
+.phpunit.result.cache
+Homestead.json
+Homestead.yaml
+auth.json
+npm-debug.log
+yarn-error.log
+/.fleet
+
 ### Security & Sensitive Files ###
 **/application.properties
 **/application-*.properties
 *.env
+.env
 .env.*
+.env.backup
+.env.production
 
 ### Database Backups ###
 *.sql.backup
 *_backup.sql
 wurger_backup*.sql
 
-### Node Modules (Frontend) ###
+### Node Modules (Frontend - React) ###
 **/node_modules/
 **/dist/
 **/.next/
@@ -52,4 +73,3 @@ wurger_backup*.sql
 ### Logs ###
 *.log
 logs/
-
