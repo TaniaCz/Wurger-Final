@@ -72,9 +72,7 @@ public class Producto {
     @JsonIgnore
     private List<Receta> recetas;
 
-    @OneToMany(mappedBy = "producto", cascade = CascadeType.ALL)
-    @JsonIgnore
-    private List<Promocion> promociones;
+    // Las promociones ahora se asocian a ProductoTerminado, no a Producto (insumos)
 
     // --- ENUMS ---
     public enum Estado {
