@@ -1,18 +1,23 @@
 package com.Wurger.service;
 
-import jakarta.mail.MessagingException;
-import jakarta.mail.internet.MimeMessage;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class EmailService {
 
-    @Autowired
-    private JavaMailSender mailSender;
+    @Value("${brevo.api.key:}")
+    private String brevoApiKey;
 
     @Value("${spring.mail.username}")
     private String fromEmail;
@@ -300,20 +305,43 @@ public class EmailService {
     }
 
     // =====================================================================
-    // MÉTODO AUXILIAR PARA ENVIAR HTML
+    // MÉTODO AUXILIAR PARA ENVIAR HTML (VÍA BREVO API)
     // =====================================================================
     private void enviarHtml(String destinatario, String asunto, String html) {
         try {
-            MimeMessage mensaje = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(mensaje, true, "UTF-8");
-            helper.setFrom(fromEmail);
-            helper.setTo(destinatario);
-            helper.setSubject(asunto);
-            helper.setText(html, true);
-            mailSender.send(mensaje);
-            System.out.println("✅ Correo enviado exitosamente a: " + destinatario);
+            if (brevoApiKey == null || brevoApiKey.isBlank()) {
+                System.err.println("❌ Error: API Key de Brevo no configurada.");
+                return;
+            }
+
+            RestTemplate restTemplate = new RestTemplate();
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+            headers.set("api-key", brevoApiKey);
+
+            Map<String, Object> body = new HashMap<>();
+            
+            Map<String, String> sender = new HashMap<>();
+            sender.put("name", "Wurger Restaurant");
+            sender.put("email", fromEmail);
+            body.put("sender", sender);
+
+            List<Map<String, String>> toList = new ArrayList<>();
+            Map<String, String> to = new HashMap<>();
+            to.put("email", destinatario);
+            toList.add(to);
+            body.put("to", toList);
+
+            body.put("subject", asunto);
+            body.put("htmlContent", html);
+
+            HttpEntity<Map<String, Object>> request = new HttpEntity<>(body, headers);
+            
+            restTemplate.postForEntity("https://api.brevo.com/v3/smtp/email", request, String.class);
+            System.out.println("✅ Correo enviado exitosamente (vía Brevo API) a: " + destinatario);
         } catch (Exception e) {
-            System.err.println("❌ Error al enviar correo a " + destinatario + ": " + e.getMessage());
+            System.err.println("❌ Error al enviar correo a " + destinatario + " (vía Brevo): " + e.getMessage());
             e.printStackTrace();
         }
     }
