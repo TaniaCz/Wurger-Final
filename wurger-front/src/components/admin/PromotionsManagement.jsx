@@ -38,7 +38,7 @@ const PromotionsManagement = () => {
 
     const fetchProducts = async () => {
         try {
-            const response = await fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:8080'}/api/productos`);
+            const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:8080'}/api/productos-terminados`);
             if (response.ok) {
                 const data = await response.json();
                 setProducts(data);
@@ -371,7 +371,7 @@ const PromotionsManagement = () => {
                                                 <option value="">Seleccionar producto...</option>
                                                 {products.map(p => (
                                                     <option key={p.id} value={p.id}>
-                                                        {p.nombreProducto} - {formatCOP(p.precioVenta)}
+                                                        {p.nombre} - {formatCOP(p.precio)}
                                                     </option>
                                                 ))}
                                             </select>

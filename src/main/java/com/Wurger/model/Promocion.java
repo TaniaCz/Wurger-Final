@@ -40,10 +40,10 @@ public class Promocion {
     @Column(name = "tipo_descuento", length = 20, nullable = false)
     private String tipoDescuento; // "PORCENTAJE" o "FIJO"
 
-    // Relación con Producto
+    // Relación con ProductoTerminado (Hamburguesas, Combos, etc)
     @ManyToOne
     @JoinColumn(name = "id_producto")
-    private Producto producto;
+    private ProductoTerminado producto;
 
     public enum EstadoPromocion {
         Activa,

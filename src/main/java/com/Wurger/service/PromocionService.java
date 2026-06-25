@@ -1,9 +1,9 @@
 package com.Wurger.service;
 
 import com.Wurger.dto.PromocionDTO;
-import com.Wurger.model.Producto;
+import com.Wurger.model.ProductoTerminado;
 import com.Wurger.model.Promocion;
-import com.Wurger.repository.ProductoRepository;
+import com.Wurger.repository.ProductoTerminadoRepository;
 import com.Wurger.repository.PromocionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,7 +18,7 @@ public class PromocionService {
     private PromocionRepository promocionRepository;
 
     @Autowired
-    private ProductoRepository productoRepository;
+    private ProductoTerminadoRepository productoTerminadoRepository;
 
     public List<Promocion> findAll() {
         return promocionRepository.findAll();
@@ -50,8 +50,8 @@ public class PromocionService {
         p.setTipoDescuento(dto.getTipoDescuento());
 
         if (dto.getIdProducto() != null) {
-            Producto prod = productoRepository.findById(dto.getIdProducto())
-                    .orElseThrow(() -> new RuntimeException("Producto no encontrado ID: " + dto.getIdProducto()));
+            ProductoTerminado prod = productoTerminadoRepository.findById(dto.getIdProducto())
+                    .orElseThrow(() -> new RuntimeException("Producto terminado no encontrado ID: " + dto.getIdProducto()));
             p.setProducto(prod);
         }
 

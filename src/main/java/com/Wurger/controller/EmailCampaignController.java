@@ -67,7 +67,7 @@ public class EmailCampaignController {
                     discountTextVal = String.format("$%,.0f Dto.", p.getDescuento());
                 }
                 if (p.getProducto() != null) {
-                    productPromoVal = p.getProducto().getNombreProducto();
+                    productPromoVal = p.getProducto().getNombre();
                     imgUrlVal = p.getProducto().getImagen();
                 }
             }

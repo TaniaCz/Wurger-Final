@@ -45,7 +45,7 @@ public class CampaignService {
             } else {
                 discountTextVal = String.format("$%,.0f Dto.", p.getDescuento());
             }
-            String productPromoVal = p.getProducto() != null ? p.getProducto().getNombreProducto() : "";
+            String productPromoVal = p.getProducto() != null ? p.getProducto().getNombre() : "";
             String imgUrlVal = p.getProducto() != null ? p.getProducto().getImagen() : "";
             return new PromoDetails(discountTextVal, productPromoVal, imgUrlVal);
         }
