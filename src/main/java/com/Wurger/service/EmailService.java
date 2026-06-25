@@ -17,6 +17,9 @@ public class EmailService {
     @Value("${spring.mail.username}")
     private String fromEmail;
 
+    @Value("${app.frontend.url:http://localhost:5173}")
+    private String frontendUrl;
+
     // =====================================================================
     // CORREO DE BIENVENIDA (al registrarse)
     // =====================================================================
@@ -57,7 +60,7 @@ public class EmailService {
                           
                           <!-- CTA BUTTON -->
                           <div style="text-align: center; margin: 32px 0;">
-                            <a href="http://localhost:5173/login" 
+                            <a href="%s/login" 
                                style="background: linear-gradient(135deg, #FF9F1C 0%%, #FF6B35 100%%); 
                                       color: white; 
                                       text-decoration: none; 
@@ -109,7 +112,7 @@ public class EmailService {
               </table>
             </body>
             </html>
-            """.formatted(nombre);
+            """.formatted(nombre, frontendUrl);
 
         enviarHtml(destinatario, asunto, html);
     }
@@ -118,7 +121,7 @@ public class EmailService {
     // CORREO DE RECUPERACIÓN DE CONTRASEÑA
     // =====================================================================
     public void enviarRecuperacion(String destinatario, String nombre, String token) {
-        String enlace = "http://localhost:5173/reset-password?token=" + token;
+        String enlace = frontendUrl + "/reset-password?token=" + token;
         String asunto = "🔑 Recupera tu contraseña de Wurger";
         String html = """
             <!DOCTYPE html>
@@ -259,7 +262,7 @@ public class EmailService {
                           
                           <!-- CTA BUTTON -->
                           <div style="text-align: center; margin: 32px 0;">
-                            <a href="http://localhost:5173/login" 
+                            <a href="%s/login" 
                                style="background: linear-gradient(135deg, #FF9F1C 0%%, #FF6B35 100%%); 
                                       color: white; 
                                       text-decoration: none; 
@@ -291,7 +294,7 @@ public class EmailService {
               </table>
             </body>
             </html>
-            """.formatted(asunto, nombre, titulo, mensaje, promoBox);
+            """.formatted(asunto, nombre, titulo, mensaje, promoBox, frontendUrl);
 
         enviarHtml(destinatario, asunto, html);
     }

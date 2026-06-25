@@ -6,25 +6,22 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/upload")
-@CrossOrigin(origins = "*") // Permite al frontend acceder
+@CrossOrigin(origins = "*")
 public class UploadController {
 
-    @Value("${app.upload.base-url:http://localhost:8080}")
-    private String uploadBaseUrl;
-
-    // Directorio donde se guardarán las imágenes
-    private static final String UPLOAD_DIR = "uploads/";
+    @Value("${imgbb.api.key:}")
+    private String imgbbApiKey;
 
     @PostMapping
     public ResponseEntity<Map<String, String>> uploadImage(@RequestParam("file") MultipartFile file) {
@@ -35,32 +32,73 @@ public class UploadController {
                 return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
             }
 
-            // Crear el directorio si no existe
-            File directory = new File(UPLOAD_DIR);
-            if (!directory.exists()) {
-                directory.mkdirs();
+            // Si no hay API Key de ImgBB configurada, devolver error claro
+            if (imgbbApiKey == null || imgbbApiKey.isBlank()) {
+                response.put("error", "No se ha configurado la API Key de ImgBB en el servidor.");
+                return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
             }
 
-            // Generar nombre único usando UUID para no sobrescribir archivos
-            String originalFileName = file.getOriginalFilename();
-            String fileExtension = "";
-            if (originalFileName != null && originalFileName.contains(".")) {
-                fileExtension = originalFileName.substring(originalFileName.lastIndexOf("."));
+            // Convertir imagen a Base64
+            byte[] fileBytes = file.getBytes();
+            String base64Image = Base64.getEncoder().encodeToString(fileBytes);
+
+            // Armar la petición a ImgBB
+            String apiUrl = "https://api.imgbb.com/1/upload";
+            String params = "key=" + URLEncoder.encode(imgbbApiKey, StandardCharsets.UTF_8)
+                    + "&image=" + URLEncoder.encode(base64Image, StandardCharsets.UTF_8);
+
+            URL url = new URL(apiUrl);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setDoOutput(true);
+            conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+
+            try (OutputStream os = conn.getOutputStream()) {
+                os.write(params.getBytes(StandardCharsets.UTF_8));
             }
-            String newFileName = UUID.randomUUID().toString() + fileExtension;
 
-            // Guardar el archivo localmente
-            Path filePath = Paths.get(UPLOAD_DIR + newFileName);
-            Files.write(filePath, file.getBytes());
+            // Leer respuesta
+            int responseCode = conn.getResponseCode();
+            InputStream is = (responseCode >= 200 && responseCode < 300)
+                    ? conn.getInputStream()
+                    : conn.getErrorStream();
 
-            // Devolver la URL pública usando el base-url configurado
-            String publicUrl = uploadBaseUrl + "/uploads/" + newFileName;
-            response.put("url", publicUrl);
-            return new ResponseEntity<>(response, HttpStatus.OK);
+            StringBuilder sb = new StringBuilder();
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
+                String line;
+                while ((line = br.readLine()) != null) {
+                    sb.append(line);
+                }
+            }
+
+            String jsonResponse = sb.toString();
+
+            // Extraer la URL directa del JSON de ImgBB de forma simple
+            // El JSON tiene: "url":"https://i.ibb.co/..."
+            if (jsonResponse.contains("\"url\"")) {
+                int startIndex = jsonResponse.indexOf("\"url\":\"") + 7;
+                int endIndex = jsonResponse.indexOf("\"", startIndex);
+                // La url directa está en data.display_url o data.url
+                // Buscamos la URL de "display_url" que es la imagen directa
+                String displayUrl = "";
+                if (jsonResponse.contains("\"display_url\":\"")) {
+                    int s = jsonResponse.indexOf("\"display_url\":\"") + 15;
+                    int e = jsonResponse.indexOf("\"", s);
+                    displayUrl = jsonResponse.substring(s, e).replace("\\/", "/");
+                } else {
+                    displayUrl = jsonResponse.substring(startIndex, endIndex).replace("\\/", "/");
+                }
+
+                response.put("url", displayUrl);
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            } else {
+                response.put("error", "Error al subir imagen a ImgBB: " + jsonResponse);
+                return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
 
         } catch (IOException e) {
             e.printStackTrace();
-            response.put("error", "Error al guardar el archivo: " + e.getMessage());
+            response.put("error", "Error de conexión al subir la imagen: " + e.getMessage());
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
