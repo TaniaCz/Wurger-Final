@@ -134,7 +134,8 @@ const ProductManagement = () => {
         const c = parseFloat(cleanCantidad);
         if (c > 0 && t > 0) {
             const unitPrice = t / c;
-            setFormData(prev => ({ ...prev, precioCompra: unitPrice.toFixed(4) }));
+            // Redondear al entero más cercano para evitar decimales confusos
+            setFormData(prev => ({ ...prev, precioCompra: Math.round(unitPrice) }));
         }
     };
 

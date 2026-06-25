@@ -144,7 +144,7 @@ const EmailCampaigns = () => {
         };
 
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 8000); // 8 seconds timeout
+        const timeoutId = setTimeout(() => controller.abort(), 35000); // 35 seconds timeout
 
         try {
             const response = await fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:8080'}/api/campanas/enviar`, {
@@ -174,8 +174,8 @@ const EmailCampaigns = () => {
             clearTimeout(timeoutId);
             if (error.name === 'AbortError') {
                 setFeedback({ 
-                    type: 'danger', 
-                    text: '⚠️ La petición al servidor excedió el tiempo límite de 8 segundos. Es posible que el servidor intente mandar los correos de forma síncrona y la conexión SMTP esté bloqueada.' 
+                    type: 'warning', 
+                    text: '⚠️ El servidor tardó demasiado en responder. La campaña probablemente sigue siendo procesada en segundo plano. Revisa los logs de Render para confirmar.' 
                 });
             } else {
                 setFeedback({ type: 'danger', text: 'Error al enviar: ' + error.message });
