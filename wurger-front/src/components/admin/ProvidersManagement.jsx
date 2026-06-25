@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-const API_URL = 'http://localhost:8080/api/proveedores';
+const API_URL = `\${import.meta.env.VITE_API_URL || 'http://localhost:8080'}/api/proveedores`;
 
 function ProvidersManagement() {
     const [proveedores, setProveedores] = useState([]);
@@ -20,7 +20,7 @@ function ProvidersManagement() {
 
     const fetchInsumos = async () => {
         try {
-            const response = await fetch('http://localhost:8080/api/productos');
+            const response = await fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:8080'}/api/productos`);
             if (response.ok) {
                 const data = await response.json();
                 setInsumos(data);

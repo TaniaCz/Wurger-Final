@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 
-const API_PLATOS = 'http://localhost:8080/api/productos-terminados';
-const API_RECETAS = 'http://localhost:8080/api/recetas';
-const API_INSUMOS = 'http://localhost:8080/api/productos';
+const API_PLATOS = `\${import.meta.env.VITE_API_URL || 'http://localhost:8080'}/api/productos-terminados`;
+const API_RECETAS = `\${import.meta.env.VITE_API_URL || 'http://localhost:8080'}/api/recetas`;
+const API_INSUMOS = `\${import.meta.env.VITE_API_URL || 'http://localhost:8080'}/api/productos`;
 
 function DishesManagement() {
     const [platos, setPlatos] = useState([]);
@@ -79,7 +79,7 @@ function DishesManagement() {
 
         setUploading(true);
         try {
-            const response = await fetch('http://localhost:8080/api/upload', {
+            const response = await fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:8080'}/api/upload`, {
                 method: 'POST',
                 body: uploadData
             });

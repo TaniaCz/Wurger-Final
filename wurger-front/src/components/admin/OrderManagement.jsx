@@ -25,7 +25,7 @@ const OrderManagement = () => {
     const fetchOrders = async () => {
         setError(null);
         try {
-            const response = await fetch('http://localhost:8080/api/ventas');
+            const response = await fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:8080'}/api/ventas`);
             if (!response.ok) {
                 const errorText = await response.text();
                 throw new Error(errorText || `Error del servidor: ${response.status} ${response.statusText}`);
@@ -94,7 +94,7 @@ const OrderManagement = () => {
 
     const updateOrderStatus = async (orderId, newStatus) => {
         try {
-            const response = await fetch(`http://localhost:8080/api/ventas/${orderId}`, {
+            const response = await fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:8080'}/api/ventas/${orderId}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ estado: newStatus })

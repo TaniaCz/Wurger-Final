@@ -26,7 +26,7 @@ const PromotionsManagement = () => {
 
     const fetchPromotions = async () => {
         try {
-            const response = await fetch('http://localhost:8080/api/promociones');
+            const response = await fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:8080'}/api/promociones`);
             if (response.ok) {
                 const data = await response.json();
                 setPromotions(data);
@@ -38,7 +38,7 @@ const PromotionsManagement = () => {
 
     const fetchProducts = async () => {
         try {
-            const response = await fetch('http://localhost:8080/api/productos');
+            const response = await fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:8080'}/api/productos`);
             if (response.ok) {
                 const data = await response.json();
                 setProducts(data);
@@ -140,8 +140,8 @@ const PromotionsManagement = () => {
         }
 
         const url = editingPromo
-            ? `http://localhost:8080/api/promociones/${editingPromo.id}`
-            : 'http://localhost:8080/api/promociones';
+            ? `\${import.meta.env.VITE_API_URL || 'http://localhost:8080'}/api/promociones/${editingPromo.id}`
+            : `\${import.meta.env.VITE_API_URL || 'http://localhost:8080'}/api/promociones`;
 
         const method = editingPromo ? 'PUT' : 'POST';
 
@@ -177,7 +177,7 @@ const PromotionsManagement = () => {
         if (!window.confirm('¿Estás seguro de eliminar esta promoción?')) return;
 
         try {
-            const response = await fetch(`http://localhost:8080/api/promociones/${id}`, {
+            const response = await fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:8080'}/api/promociones/${id}`, {
                 method: 'DELETE'
             });
 

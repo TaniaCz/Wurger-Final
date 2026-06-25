@@ -14,9 +14,9 @@ const StockAlerts = () => {
     const fetchData = async () => {
         try {
             const [prodRes, recRes, platRes] = await Promise.all([
-                fetch('http://localhost:8080/api/productos'),
-                fetch('http://localhost:8080/api/recetas'),
-                fetch('http://localhost:8080/api/productos-terminados')
+                fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:8080'}/api/productos`),
+                fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:8080'}/api/recetas`),
+                fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:8080'}/api/productos-terminados`)
             ]);
             const prods = await prodRes.json();
             const recs = await recRes.json();
@@ -35,7 +35,7 @@ const StockAlerts = () => {
     const updateStock = async (productId, newStock) => {
         try {
             const product = productos.find(p => p.id === productId);
-            await fetch(`http://localhost:8080/api/productos/${productId}`, {
+            await fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:8080'}/api/productos/${productId}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

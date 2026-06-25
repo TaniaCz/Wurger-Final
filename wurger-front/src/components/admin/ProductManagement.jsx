@@ -39,7 +39,7 @@ const ProductManagement = () => {
 
         setUploading(true);
         try {
-            const response = await fetch('http://localhost:8080/api/upload', {
+            const response = await fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:8080'}/api/upload`, {
                 method: 'POST',
                 body: uploadData
             });
@@ -76,7 +76,7 @@ const ProductManagement = () => {
 
     const fetchCategories = async () => {
         try {
-            const response = await fetch('http://localhost:8080/api/categorias');
+            const response = await fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:8080'}/api/categorias`);
             const data = await response.json();
             setCategories(data);
         } catch (error) {
@@ -86,7 +86,7 @@ const ProductManagement = () => {
 
     const fetchProviders = async () => {
         try {
-            const response = await fetch('http://localhost:8080/api/proveedores');
+            const response = await fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:8080'}/api/proveedores`);
             const data = await response.json();
             setProviders(data);
         } catch (error) {
@@ -96,7 +96,7 @@ const ProductManagement = () => {
 
     const fetchUnits = async () => {
         try {
-            const response = await fetch('http://localhost:8080/api/unidades-medida');
+            const response = await fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:8080'}/api/unidades-medida`);
             const data = await response.json();
             setUnits(data);
         } catch (error) {
@@ -106,7 +106,7 @@ const ProductManagement = () => {
 
     const fetchProducts = async () => {
         try {
-            const response = await fetch('http://localhost:8080/api/productos');
+            const response = await fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:8080'}/api/productos`);
             const data = await response.json();
             setProducts(data);
         } catch (error) {
@@ -148,8 +148,8 @@ const ProductManagement = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const url = editingProduct
-            ? `http://localhost:8080/api/productos/${editingProduct.id}`
-            : 'http://localhost:8080/api/productos';
+            ? `\${import.meta.env.VITE_API_URL || 'http://localhost:8080'}/api/productos/${editingProduct.id}`
+            : `\${import.meta.env.VITE_API_URL || 'http://localhost:8080'}/api/productos`;
         const method = editingProduct ? 'PUT' : 'POST';
 
         try {
@@ -191,7 +191,7 @@ const ProductManagement = () => {
                             medioPago: 'Efectivo',
                             idCajaSesion: null
                         };
-                        await fetch('http://localhost:8080/api/gastos', {
+                        await fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:8080'}/api/gastos`, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify(gastoPayload)
@@ -215,7 +215,7 @@ const ProductManagement = () => {
     const handleDelete = async (id) => {
         if (window.confirm('¿Estás seguro de eliminar este insumo?')) {
             try {
-                const response = await fetch(`http://localhost:8080/api/productos/${id}`, {
+                const response = await fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:8080'}/api/productos/${id}`, {
                     method: 'DELETE'
                 });
                 if (response.ok) {

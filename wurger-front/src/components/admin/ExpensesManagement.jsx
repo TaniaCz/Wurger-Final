@@ -37,7 +37,7 @@ const ExpensesManagement = () => {
     const fetchExpenses = async () => {
         try {
             setLoading(true);
-            const response = await fetch('http://localhost:8080/api/gastos');
+            const response = await fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:8080'}/api/gastos`);
             if (response.ok) {
                 const data = await response.json();
                 setExpenses(data);
@@ -51,7 +51,7 @@ const ExpensesManagement = () => {
 
     const fetchActiveCaja = async () => {
         try {
-            const response = await fetch('http://localhost:8080/api/caja/activa');
+            const response = await fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:8080'}/api/caja/activa`);
             if (response.status === 200) {
                 const data = await response.json();
                 setActiveCaja(data);
@@ -129,8 +129,8 @@ const ExpensesManagement = () => {
 
         try {
             const url = editingGasto 
-                ? `http://localhost:8080/api/gastos/${editingGasto.id}`
-                : 'http://localhost:8080/api/gastos';
+                ? `\${import.meta.env.VITE_API_URL || 'http://localhost:8080'}/api/gastos/${editingGasto.id}`
+                : `\${import.meta.env.VITE_API_URL || 'http://localhost:8080'}/api/gastos`;
             
             const method = editingGasto ? 'PUT' : 'POST';
 
@@ -157,7 +157,7 @@ const ExpensesManagement = () => {
         if (!confirm('¿Estás seguro de que deseas eliminar este gasto?')) return;
 
         try {
-            const response = await fetch(`http://localhost:8080/api/gastos/${id}`, {
+            const response = await fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:8080'}/api/gastos/${id}`, {
                 method: 'DELETE'
             });
 

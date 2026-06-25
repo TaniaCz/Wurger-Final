@@ -168,7 +168,7 @@ const ClientDashboard = () => {
 
     const fetchProducts = async () => {
         try {
-            const response = await fetch('http://localhost:8080/api/productos-terminados');
+            const response = await fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:8080'}/api/productos-terminados`);
             if (response.ok) {
                 const data = await response.json();
                 // Ensure only active dishes are shown
@@ -181,7 +181,7 @@ const ClientDashboard = () => {
 
     const fetchPromotions = async () => {
         try {
-            const response = await fetch('http://localhost:8080/api/promociones');
+            const response = await fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:8080'}/api/promociones`);
             if (response.ok) {
                 const data = await response.json();
                 const now = new Date();
@@ -286,7 +286,7 @@ const ClientDashboard = () => {
         };
 
         try {
-            const response = await fetch('http://localhost:8080/api/ventas', {
+            const response = await fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:8080'}/api/ventas`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)

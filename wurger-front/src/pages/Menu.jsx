@@ -8,7 +8,7 @@ function Menu() {
 
     useEffect(() => {
         // Cargar productos del Backend
-        fetch('http://localhost:8080/api/productos')
+        fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:8080'}/api/productos`)
             .then(res => res.json())
             .then(data => setProductos(data))
             .catch(err => console.error(err));

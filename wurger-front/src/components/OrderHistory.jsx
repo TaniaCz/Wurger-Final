@@ -8,7 +8,7 @@ const OrderHistory = ({ userId }) => {
     useEffect(() => {
         const fetchOrders = async () => {
             try {
-                const response = await fetch(`http://localhost:8080/api/ventas/usuario/${userId}`);
+                const response = await fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:8080'}/api/ventas/usuario/${userId}`);
                 if (response.ok) {
                     const data = await response.json();
                     // Sort by newest first

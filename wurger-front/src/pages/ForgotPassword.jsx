@@ -14,7 +14,7 @@ const ForgotPassword = () => {
         setLoading(true);
 
         try {
-            const response = await fetch('http://localhost:8080/api/auth/forgot-password?email=' + encodeURIComponent(email), {
+            const response = await fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:8080'}/api/auth/forgot-password?email=` + encodeURIComponent(email), {
                 method: 'POST'
             });
 

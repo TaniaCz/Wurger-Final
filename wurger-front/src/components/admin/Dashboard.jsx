@@ -23,10 +23,10 @@ const Dashboard = ({ onNavigate }) => {
         try {
             // Fetch all data concurrently
             const [ventasRes, gastosRes, stockRes, cajaRes] = await Promise.allSettled([
-                fetch('http://localhost:8080/api/ventas'),
-                fetch('http://localhost:8080/api/gastos'),
-                fetch('http://localhost:8080/api/productos'),
-                fetch('http://localhost:8080/api/caja/activa'),
+                fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:8080'}/api/ventas`),
+                fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:8080'}/api/gastos`),
+                fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:8080'}/api/productos`),
+                fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:8080'}/api/caja/activa`),
             ]);
 
             const getLocalDateString = (date) => {

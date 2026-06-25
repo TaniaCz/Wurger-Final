@@ -19,7 +19,7 @@ const EmailCampaigns = () => {
 
     const fetchPromotions = async () => {
         try {
-            const response = await fetch('http://localhost:8080/api/promociones');
+            const response = await fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:8080'}/api/promociones`);
             if (response.ok) {
                 const data = await response.json();
                 setPromotions(data);
@@ -33,7 +33,7 @@ const EmailCampaigns = () => {
         setFetchingTargets(true);
         setFeedback({ type: '', text: '' });
         try {
-            const response = await fetch('http://localhost:8080/api/campanas/destinatarios');
+            const response = await fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:8080'}/api/campanas/destinatarios`);
             if (!response.ok) throw new Error('Error al consultar clientes con pedidos');
             const data = await response.json();
             
@@ -147,7 +147,7 @@ const EmailCampaigns = () => {
         const timeoutId = setTimeout(() => controller.abort(), 8000); // 8 seconds timeout
 
         try {
-            const response = await fetch('http://localhost:8080/api/campanas/enviar', {
+            const response = await fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:8080'}/api/campanas/enviar`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload),

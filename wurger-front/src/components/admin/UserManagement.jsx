@@ -64,7 +64,7 @@ const UserManagement = () => {
 
     const fetchUsers = async () => {
         try {
-            const response = await fetch('http://localhost:8080/api/usuarios');
+            const response = await fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:8080'}/api/usuarios`);
             if (!response.ok) throw new Error('Error fetching users');
             const data = await response.json();
             setUsers(Array.isArray(data) ? data : []);
@@ -76,7 +76,7 @@ const UserManagement = () => {
 
     const fetchUserOrders = async (userId) => {
         try {
-            const response = await fetch(`http://localhost:8080/api/ventas/usuario/${userId}`);
+            const response = await fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:8080'}/api/ventas/usuario/${userId}`);
             const data = await response.json();
             setUserOrders(data);
         } catch (error) {
@@ -93,7 +93,7 @@ const UserManagement = () => {
         const newStatus = user.estado === 'Activo' ? 'Inactivo' : 'Activo';
 
         try {
-            const response = await fetch(`http://localhost:8080/api/usuarios/${user.id}`, {
+            const response = await fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:8080'}/api/usuarios/${user.id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ ...user, estado: newStatus })

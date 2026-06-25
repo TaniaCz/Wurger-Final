@@ -60,7 +60,7 @@ const CashRegister = () => {
     const checkActiveCaja = async () => {
         try {
             setLoading(true);
-            const response = await fetch('http://localhost:8080/api/caja/activa');
+            const response = await fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:8080'}/api/caja/activa`);
             if (response.status === 200) {
                 const data = await response.json();
                 setActiveCaja(data);
@@ -77,7 +77,7 @@ const CashRegister = () => {
 
     const fetchCajaResumen = async (id) => {
         try {
-            const response = await fetch(`http://localhost:8080/api/caja/resumen/${id}`);
+            const response = await fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:8080'}/api/caja/resumen/${id}`);
             if (response.ok) {
                 const data = await response.json();
                 setCajaResumen(data);
@@ -89,7 +89,7 @@ const CashRegister = () => {
 
     const fetchProducts = async () => {
         try {
-            const response = await fetch('http://localhost:8080/api/productos-terminados');
+            const response = await fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:8080'}/api/productos-terminados`);
             if (response.ok) {
                 const data = await response.json();
                 const activeProducts = data.filter(p => p.estado === 'Activo');
@@ -106,7 +106,7 @@ const CashRegister = () => {
 
     const fetchPromotions = async () => {
         try {
-            const response = await fetch('http://localhost:8080/api/promociones');
+            const response = await fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:8080'}/api/promociones`);
             if (response.ok) {
                 const data = await response.json();
                 const now = new Date();
@@ -152,7 +152,7 @@ const CashRegister = () => {
         }
 
         try {
-            const response = await fetch('http://localhost:8080/api/caja/abrir', {
+            const response = await fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:8080'}/api/caja/abrir`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -185,7 +185,7 @@ const CashRegister = () => {
         }
 
         try {
-            const response = await fetch('http://localhost:8080/api/caja/cerrar', {
+            const response = await fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:8080'}/api/caja/cerrar`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -334,7 +334,7 @@ const CashRegister = () => {
         };
 
         try {
-            const response = await fetch('http://localhost:8080/api/ventas', {
+            const response = await fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:8080'}/api/ventas`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)

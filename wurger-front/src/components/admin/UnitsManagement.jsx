@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-const API_URL = 'http://localhost:8080/api/unidades-medida';
+const API_URL = `\${import.meta.env.VITE_API_URL || 'http://localhost:8080'}/api/unidades-medida`;
 
 function UnitsManagement() {
     const [unidades, setUnidades] = useState([]);

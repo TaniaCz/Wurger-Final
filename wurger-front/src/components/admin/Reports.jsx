@@ -50,9 +50,9 @@ const Reports = () => {
     const fetchData = async () => {
         try {
             const [salesRes, productsRes, expensesRes] = await Promise.all([
-                fetch('http://localhost:8080/api/ventas'),
-                fetch('http://localhost:8080/api/productos'),
-                fetch('http://localhost:8080/api/gastos')
+                fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:8080'}/api/ventas`),
+                fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:8080'}/api/productos`),
+                fetch(`\${import.meta.env.VITE_API_URL || 'http://localhost:8080'}/api/gastos`)
             ]);
             const salesData = await salesRes.json();
             const productsData = await productsRes.json();
