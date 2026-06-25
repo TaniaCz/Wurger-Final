@@ -312,7 +312,7 @@ public class EmailService {
             helper.setText(html, true);
             mailSender.send(mensaje);
             System.out.println("✅ Correo enviado exitosamente a: " + destinatario);
-        } catch (MessagingException e) {
+        } catch (Exception e) {
             System.err.println("❌ Error al enviar correo a " + destinatario + ": " + e.getMessage());
             e.printStackTrace();
         }
