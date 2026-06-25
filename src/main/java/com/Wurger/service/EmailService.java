@@ -25,6 +25,13 @@ public class EmailService {
     @Value("${app.frontend.url:http://localhost:5173}")
     private String frontendUrl;
 
+    @jakarta.annotation.PostConstruct
+    public void init() {
+        if (frontendUrl != null && frontendUrl.endsWith("/")) {
+            frontendUrl = frontendUrl.substring(0, frontendUrl.length() - 1);
+        }
+    }
+
     // =====================================================================
     // CORREO DE BIENVENIDA (al registrarse)
     // =====================================================================
