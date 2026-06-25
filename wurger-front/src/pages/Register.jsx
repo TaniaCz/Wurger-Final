@@ -5,6 +5,7 @@ const Register = () => {
     const [formData, setFormData] = useState({
         email: '',
         password: '',
+        confirmPassword: '',
         nombre: '',
         telefono: '',
         direccion: ''
@@ -64,13 +65,16 @@ const Register = () => {
             return 'La contraseña debe tener al menos un número.';
         }
         if (!/[^A-Za-z0-9]/.test(formData.password)) {
-            return 'La contraseña debe tener al menos un carácter especial.';
+            return 'La contraseña debe tener al menos un carácter especial (ej: @, #, $, !, %, &, *...).';
         }
         if (!phoneRegex.test(formData.telefono)) {
             return 'El teléfono debe tener exactamente 10 dígitos numéricos.';
         }
         if (formData.direccion.length < 10) {
             return 'La dirección debe tener al menos 10 caracteres.';
+        }
+        if (formData.password !== formData.confirmPassword) {
+            return 'Las contraseñas no coinciden.';
         }
         return null;
     };
@@ -164,7 +168,7 @@ const Register = () => {
                                 </span>
                                 <input
                                     type="text"
-                                    className="form-control bg-dark text-white border-0 ps-0"
+                                    className="form-control bg-dark text-white border-0 ps-2"
                                     name="nombre"
                                     value={formData.nombre}
                                     onChange={handleChange}
@@ -184,7 +188,7 @@ const Register = () => {
                                 </span>
                                 <input
                                     type="email"
-                                    className="form-control bg-dark text-white border-0 ps-0"
+                                    className="form-control bg-dark text-white border-0 ps-2"
                                     name="email"
                                     value={formData.email}
                                     onChange={handleChange}
@@ -204,7 +208,7 @@ const Register = () => {
                                 </span>
                                 <input
                                     type={showPassword ? "text" : "password"}
-                                    className="form-control bg-dark text-white border-0 px-0"
+                                    className="form-control bg-dark text-white border-0 ps-2"
                                     name="password"
                                     value={formData.password}
                                     onChange={handleChange}
@@ -247,6 +251,26 @@ const Register = () => {
                             )}
                         </div>
 
+                        {/* Confirm Password Input */}
+                        <div className="mb-3">
+                            <label className="form-label small fw-bold text-light mb-2">Confirmar Contraseña</label>
+                            <div className="input-group shadow-sm" style={{ borderRadius: '12px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)' }}>
+                                <span className="input-group-text bg-dark border-0 text-primary">
+                                    <i className="bi bi-lock-fill"></i>
+                                </span>
+                                <input
+                                    type={showPassword ? "text" : "password"}
+                                    className="form-control bg-dark text-white border-0 ps-2"
+                                    name="confirmPassword"
+                                    value={formData.confirmPassword}
+                                    onChange={handleChange}
+                                    required
+                                    placeholder="Repite tu contraseña"
+                                    style={{ boxShadow: 'none' }}
+                                />
+                            </div>
+                        </div>
+
                         {/* Telephone Input */}
                         <div className="mb-3">
                             <label className="form-label small fw-bold text-light mb-2">Teléfono</label>
@@ -256,7 +280,7 @@ const Register = () => {
                                 </span>
                                 <input
                                     type="text"
-                                    className="form-control bg-dark text-white border-0 ps-0"
+                                    className="form-control bg-dark text-white border-0 ps-2"
                                     name="telefono"
                                     value={formData.telefono}
                                     onChange={handleChange}
@@ -276,7 +300,7 @@ const Register = () => {
                                     <i className="bi bi-geo-alt-fill"></i>
                                 </span>
                                 <textarea
-                                    className="form-control bg-dark text-white border-0 ps-0"
+                                    className="form-control bg-dark text-white border-0 ps-2"
                                     name="direccion"
                                     value={formData.direccion}
                                     onChange={handleChange}

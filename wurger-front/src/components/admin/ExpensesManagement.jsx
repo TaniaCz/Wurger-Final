@@ -75,7 +75,10 @@ const ExpensesManagement = () => {
     };
 
     const handleInputChange = (e) => {
-        const { name, value, type, checked } = e.target;
+        let { name, value, type, checked } = e.target;
+        if (name === 'monto') {
+            value = value.replace(/\D/g, ''); // Solo números para el monto
+        }
         setFormData({
             ...formData,
             [name]: type === 'checkbox' ? checked : value
@@ -113,7 +116,7 @@ const ExpensesManagement = () => {
         
         let payload = {
             descripcion: formData.descripcion,
-            monto: parseFloat(formData.monto),
+            monto: parseFloat(String(formData.monto).replace(/\D/g, '')),
             fecha: formData.fecha,
             categoria: formData.categoria,
             medioPago: formData.medioPago,
@@ -389,17 +392,19 @@ const ExpensesManagement = () => {
                                     <div className="row g-3 mb-3">
                                         <div className="col-md-6">
                                             <label className="form-label small text-muted">Monto (COP) *</label>
-                                            <input
-                                                type="number"
-                                                className="form-control"
-                                                name="monto"
-                                                value={formData.monto}
-                                                onChange={handleInputChange}
-                                                required
-                                                min="0.01"
-                                                step="any"
-                                                placeholder="Ej. 15000"
-                                            />
+                                            <div className="input-group">
+                                                <span className="input-group-text bg-transparent">$</span>
+                                                <input
+                                                    type="text"
+                                                    inputMode="numeric"
+                                                    className="form-control"
+                                                    name="monto"
+                                                    value={formData.monto ? new Intl.NumberFormat('es-CO').format(String(formData.monto).replace(/\D/g, '')) : ''}
+                                                    onChange={handleInputChange}
+                                                    required
+                                                    placeholder="Ej. 15000"
+                                                />
+                                            </div>
                                         </div>
                                         <div className="col-md-6">
                                             <label className="form-label small text-muted">Fecha *</label>

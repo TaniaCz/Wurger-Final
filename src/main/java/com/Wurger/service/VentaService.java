@@ -4,6 +4,7 @@ import com.Wurger.dto.DetalleVentaDTO;
 import com.Wurger.dto.VentaRequestDTO;
 import com.Wurger.model.*;
 import com.Wurger.repository.ProductoRepository;
+import com.Wurger.repository.ProductoTerminadoRepository;
 import com.Wurger.repository.PromocionRepository;
 import com.Wurger.repository.UsuarioRepository;
 import com.Wurger.repository.VentaRepository;
@@ -28,6 +29,9 @@ public class VentaService {
 
     @Autowired
     private ProductoRepository productoRepository;
+
+    @Autowired
+    private ProductoTerminadoRepository productoTerminadoRepository;
 
     @Autowired
     private PromocionRepository promocionRepository;
@@ -57,26 +61,31 @@ public class VentaService {
         List<DetalleVenta> detallesEntidad = new ArrayList<>();
 
         for (DetalleVentaDTO item : ventaDTO.getDetalles()) {
-            Producto producto = productoRepository.findById(item.getIdProducto())
-                    .orElseThrow(() -> new RuntimeException("Producto no encontrado ID: " + item.getIdProducto()));
+            ProductoTerminado plato = productoTerminadoRepository.findById(item.getIdProductoTerminado())
+                    .orElseThrow(() -> new RuntimeException("Plato no encontrado ID: " + item.getIdProductoTerminado()));
 
-            // A) Validar Stock
-            if (producto.getStock() < item.getCantidad()) {
-                throw new RuntimeException("Stock insuficiente para: " + producto.getNombreProducto() +
-                        " (Disponible: " + producto.getStock() + ", Solicitado: " + item.getCantidad() + ")");
+            // A) Validar y Descontar Stock basado en Recetas
+            if (plato.getRecetas() != null && !plato.getRecetas().isEmpty()) {
+                for (Receta receta : plato.getRecetas()) {
+                    Producto insumo = receta.getProducto();
+                    int cantidadEntera = receta.getCantidadUsada().multiply(new BigDecimal(item.getCantidad())).intValue();
+                    
+                    if (insumo.getStock() < cantidadEntera) {
+                        throw new RuntimeException("Stock insuficiente de insumo: " + insumo.getNombreProducto() +
+                                " (Disponible: " + insumo.getStock() + ", Solicitado: " + cantidadEntera + ")");
+                    }
+                    insumo.setStock(insumo.getStock() - cantidadEntera);
+                    productoRepository.save(insumo);
+                }
             }
-
-            // B) DESCONTAR STOCK INMEDIATAMENTE
-            producto.setStock(producto.getStock() - item.getCantidad());
-            productoRepository.save(producto);
 
             // C) Crear Detalle
             DetalleVenta detalle = new DetalleVenta();
             detalle.setCantidad(item.getCantidad());
-            detalle.setPrecioUnitario(producto.getPrecioVenta());
+            detalle.setPrecioUnitario(plato.getPrecio());
 
             // Cálculos
-            BigDecimal subtotal = producto.getPrecioVenta().multiply(new BigDecimal(item.getCantidad()));
+            BigDecimal subtotal = plato.getPrecio().multiply(new BigDecimal(item.getCantidad()));
             BigDecimal descuento = item.getDescuento() != null ? item.getDescuento() : BigDecimal.ZERO;
 
             detalle.setDescuento(descuento);
@@ -98,7 +107,7 @@ public class VentaService {
 
             // Relación Bidireccional
             detalle.setVenta(venta);
-            detalle.setProducto(producto);
+            detalle.setProductoTerminado(plato);
             detallesEntidad.add(detalle);
 
             // Sumar al total general
@@ -146,15 +155,21 @@ public class VentaService {
         // Si cambia a Cancelada, devolver el stock
         if (estadoNuevo == Venta.EstadoVenta.Cancelada && estadoAnterior != Venta.EstadoVenta.Cancelada) {
             for (DetalleVenta detalle : venta.getDetalles()) {
-                Producto producto = detalle.getProducto();
+                ProductoTerminado plato = detalle.getProductoTerminado();
 
-                if (producto == null) {
-                    throw new RuntimeException("Producto no encontrado en el detalle de venta");
+                if (plato == null) {
+                    throw new RuntimeException("Plato no encontrado en el detalle de venta");
                 }
 
-                // Devolver stock
-                producto.setStock(producto.getStock() + detalle.getCantidad());
-                productoRepository.save(producto);
+                // Devolver stock a los insumos
+                if (plato.getRecetas() != null) {
+                    for (Receta receta : plato.getRecetas()) {
+                        Producto insumo = receta.getProducto();
+                        int cantidadEntera = receta.getCantidadUsada().multiply(new BigDecimal(detalle.getCantidad())).intValue();
+                        insumo.setStock(insumo.getStock() + cantidadEntera);
+                        productoRepository.save(insumo);
+                    }
+                }
 
                 // Decrementar contador de usos de promoción si se aplicó
                 if (detalle.getPromocion() != null) {

@@ -20,8 +20,5 @@ public class UnidadMedida {
 
     private Integer cantidad;
 
-    // Relación Muchos a Uno con Producto
-    @ManyToOne
-    @JoinColumn(name = "id_producto")
-    private Producto producto;
+
 }

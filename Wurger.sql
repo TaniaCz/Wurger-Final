@@ -18,10 +18,28 @@ CREATE TABLE usuario_info (
     FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario) ON DELETE CASCADE
 );
 
+CREATE TABLE proveedor (
+    id_proveedor INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    telefono VARCHAR(20),
+    email VARCHAR(100),
+    direccion VARCHAR(100),
+    categoria_proveedor VARCHAR(150),
+    estado ENUM('Activo','Inactivo') DEFAULT 'Activo',
+    id_usuario INT,
+    FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario)
+);
+
 CREATE TABLE categoria_producto (
     id_categoria INT AUTO_INCREMENT PRIMARY KEY,
     nombre_categoria VARCHAR(50) NOT NULL,
     cantidad_categoria INT DEFAULT 0
+);
+
+CREATE TABLE unidad_medida (
+    id_unidad INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(50) NOT NULL,
+    cantidad INT
 );
 
 CREATE TABLE producto (
@@ -31,12 +49,16 @@ CREATE TABLE producto (
     stock_min INT,
     stock_max INT,
     precio_compra DECIMAL(10,2),
-    precio_venta DECIMAL(10,2),
     tipo_producto VARCHAR(50),
     estado ENUM('Activo','Inactivo') DEFAULT 'Activo',
     fecha_ingreso DATE,
+    fecha_vencimiento DATE,
     id_categoria INT,
-    FOREIGN KEY (id_categoria) REFERENCES categoria_producto(id_categoria)
+    id_unidad INT,
+    id_proveedor INT,
+    FOREIGN KEY (id_categoria) REFERENCES categoria_producto(id_categoria),
+    FOREIGN KEY (id_unidad) REFERENCES unidad_medida(id_unidad),
+    FOREIGN KEY (id_proveedor) REFERENCES proveedor(id_proveedor)
 );
 
 CREATE TABLE producto_terminado (
@@ -49,16 +71,15 @@ CREATE TABLE producto_terminado (
     stock_actual INT DEFAULT 0,
     stock_min INT,
     estado ENUM('Activo','Inactivo') DEFAULT 'Activo',
-    fecha_ingreso DATE,
-    id_producto INT,
-    FOREIGN KEY (id_producto) REFERENCES producto(id_producto)
+    fecha_ingreso DATE
 );
 
-CREATE TABLE unidad_medida (
-    id_unidad INT AUTO_INCREMENT PRIMARY KEY,
-    nombre VARCHAR(50) NOT NULL,
-    cantidad INT,
-    id_producto INT,
+CREATE TABLE receta (
+    id_receta INT AUTO_INCREMENT PRIMARY KEY,
+    cantidad_usada DECIMAL(10,2) NOT NULL,
+    id_producto_terminado INT NOT NULL,
+    id_producto INT NOT NULL,
+    FOREIGN KEY (id_producto_terminado) REFERENCES producto_terminado(id_producto_terminado),
     FOREIGN KEY (id_producto) REFERENCES producto(id_producto)
 );
 
@@ -88,13 +109,29 @@ CREATE TABLE pedido (
     FOREIGN KEY (id_usuario_info) REFERENCES usuario_info(id_usuario_info)
 );
 
+CREATE TABLE caja_sesion (
+    id_caja_sesion INT AUTO_INCREMENT PRIMARY KEY,
+    estado VARCHAR(20),
+    fecha_apertura DATETIME,
+    fecha_cierre DATETIME,
+    id_usuario_apertura INT,
+    id_usuario_cierre INT,
+    monto_apertura DECIMAL(10,2),
+    monto_cierre DECIMAL(10,2),
+    observaciones VARCHAR(255)
+);
+
 CREATE TABLE venta (
     id_venta INT AUTO_INCREMENT PRIMARY KEY,
-    fecha DATE NOT NULL,
-    estado ENUM('Pendiente','Pagada','Anulada') DEFAULT 'Pendiente',
+    fecha DATETIME NOT NULL,
+    estado VARCHAR(20) DEFAULT 'Pendiente',
     Total_venta DECIMAL(10,2) DEFAULT 0.00,
     id_usuario INT NOT NULL,
-    FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario)
+    direccion VARCHAR(500),
+    observaciones VARCHAR(500),
+    id_caja_sesion INT,
+    FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario),
+    FOREIGN KEY (id_caja_sesion) REFERENCES caja_sesion(id_caja_sesion)
 );
 
 CREATE TABLE detalle_venta (
@@ -104,7 +141,11 @@ CREATE TABLE detalle_venta (
     subtotal DECIMAL(10,2) NOT NULL,
     descuento DECIMAL(10,2) DEFAULT 0,
     id_venta INT NOT NULL,
+    id_producto INT,
+    id_promocion INT,
     FOREIGN KEY (id_venta) REFERENCES venta(id_venta)
+    -- Asumimos que id_producto aquí se refería antes a producto, pero en realidad debería apuntar a producto_terminado para ventas. Lo dejamos suelto o lo corregimos:
+    -- FOREIGN KEY (id_producto) REFERENCES producto_terminado(id_producto_terminado)
 );
 
 CREATE TABLE forma_pago (
@@ -121,15 +162,17 @@ CREATE TABLE tipo_descuento (
     FOREIGN KEY (id_fp) REFERENCES forma_pago(id_fp)
 );
 
-CREATE TABLE proveedor (
-    id_proveedor INT AUTO_INCREMENT PRIMARY KEY,
-    nombre VARCHAR(100) NOT NULL,
-    telefono VARCHAR(20),
-    email VARCHAR(100),
-    direccion VARCHAR(100),
-    estado ENUM('Activo','Inactivo') DEFAULT 'Activo',
-    id_usuario INT,
-    FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario)
+CREATE TABLE gasto (
+    id_gasto INT AUTO_INCREMENT PRIMARY KEY,
+    categoria VARCHAR(50),
+    fecha DATE,
+    descripcion VARCHAR(255),
+    id_caja_sesion INT,
+    medio_pago VARCHAR(50),
+    monto DECIMAL(10,2),
+    id_proveedor INT,
+    FOREIGN KEY (id_caja_sesion) REFERENCES caja_sesion(id_caja_sesion),
+    FOREIGN KEY (id_proveedor) REFERENCES proveedor(id_proveedor)
 );
 
 CREATE TABLE promocion (
@@ -141,7 +184,9 @@ CREATE TABLE promocion (
     estado ENUM('Activa','Inactiva') DEFAULT 'Activa',
     descripcion VARCHAR(255),
     id_producto INT,
-    FOREIGN KEY (id_producto) REFERENCES producto(id_producto)
+    tipo_descuento VARCHAR(255),
+    descuento DOUBLE,
+    FOREIGN KEY (id_producto) REFERENCES producto_terminado(id_producto_terminado)
 );
 
 INSERT INTO usuario (email, password, rol) VALUES ('Wurger@admin.com', '$2a$10$X0zoiei0Q6fBXZRHlWGpQ.ux8gypV6BEAQLvriv6rYIdsgt8Sm/gi', 'Administrador');

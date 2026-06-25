@@ -107,7 +107,7 @@ function Login() {
                                 </span>
                                 <input
                                     type="email"
-                                    className="form-control bg-dark text-white border-0 ps-0"
+                                    className="form-control bg-dark text-white border-0 ps-2"
                                     id="email"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
@@ -129,7 +129,7 @@ function Login() {
                                 </span>
                                 <input
                                     type={showPassword ? 'text' : 'password'}
-                                    className="form-control bg-dark text-white border-0 px-0"
+                                    className="form-control bg-dark text-white border-0 ps-2"
                                     id="password"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}

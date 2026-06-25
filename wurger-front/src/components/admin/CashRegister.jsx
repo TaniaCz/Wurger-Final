@@ -49,10 +49,10 @@ const CashRegister = () => {
         // Filter products based on category and search query
         let result = products;
         if (selectedCategory !== 'All') {
-            result = result.filter(p => p.categoria?.nombreCategoria === selectedCategory);
+            result = result.filter(p => p.categoria === selectedCategory);
         }
         if (searchQuery.trim() !== '') {
-            result = result.filter(p => p.nombreProducto.toLowerCase().includes(searchQuery.toLowerCase()));
+            result = result.filter(p => p.nombre.toLowerCase().includes(searchQuery.toLowerCase()));
         }
         setFilteredProducts(result);
     }, [selectedCategory, searchQuery, products]);
@@ -89,18 +89,18 @@ const CashRegister = () => {
 
     const fetchProducts = async () => {
         try {
-            const response = await fetch('http://localhost:8080/api/productos');
+            const response = await fetch('http://localhost:8080/api/productos-terminados');
             if (response.ok) {
                 const data = await response.json();
                 const activeProducts = data.filter(p => p.estado === 'Activo');
                 setProducts(activeProducts);
                 
-                // Extract unique categories
-                const cats = Array.from(new Set(activeProducts.map(p => p.categoria?.nombreCategoria).filter(Boolean)));
+                // Extract unique categories (dishes use simple strings for categories now)
+                const cats = Array.from(new Set(activeProducts.map(p => p.categoria).filter(Boolean)));
                 setCategories(cats);
             }
         } catch (error) {
-            console.error("Error fetching products:", error);
+            console.error("Error fetching dishes:", error);
         }
     };
 
@@ -127,16 +127,16 @@ const CashRegister = () => {
     const getProductWithDiscount = (product) => {
         const promo = promotions.find(p => p.producto?.id === product.id);
         if (promo) {
-            let discountedPrice = product.precioVenta;
+            let discountedPrice = product.precio;
             if (promo.tipoDescuento === 'PORCENTAJE') {
-                discountedPrice = product.precioVenta * (1 - promo.descuento / 100);
+                discountedPrice = product.precio * (1 - promo.descuento / 100);
             } else {
-                discountedPrice = Math.max(0, product.precioVenta - promo.descuento);
+                discountedPrice = Math.max(0, product.precio - promo.descuento);
             }
             return {
                 ...product,
-                precioVenta: discountedPrice,
-                precioOriginal: product.precioVenta,
+                precio: discountedPrice,
+                precioOriginal: product.precio,
                 promoName: promo.nombre,
                 promoId: promo.id
             };
@@ -239,14 +239,16 @@ const CashRegister = () => {
         } else {
             setCart([...cart, {
                 id: productWithPromo.id,
-                nombre: productWithPromo.nombreProducto,
-                precio: productWithPromo.precioVenta,
-                originalPrice: productWithPromo.precioOriginal || productWithPromo.precioVenta,
+                nombre: productWithPromo.nombre,
+                precio: productWithPromo.precio,
+                originalPrice: productWithPromo.precioOriginal || productWithPromo.precio,
                 promoId: productWithPromo.promoId || null,
                 promoName: productWithPromo.promoName || null,
                 imagen: productWithPromo.imagen,
                 quantity: 1,
-                stock: productWithPromo.stock
+                // Dishes don't have stock themselves in the new logic, but we can set it arbitrarily high
+                // or validate based on ingredient stock later.
+                stock: 999 
             }]);
         }
     };
@@ -288,7 +290,7 @@ const CashRegister = () => {
     };
 
     const handleAmountPaidChange = (e) => {
-        const val = e.target.value;
+        let val = e.target.value.replace(/\D/g, '');
         setAmountPaid(val);
         const total = getCartTotal();
         if (val && parseFloat(val) >= total) {
@@ -320,7 +322,7 @@ const CashRegister = () => {
             detalles: cart.map(item => {
                 const discountPerUnit = item.originalPrice ? (item.originalPrice - item.precio) : 0;
                 const detalle = {
-                    idProducto: item.id,
+                    idProductoTerminado: item.id,
                     cantidad: item.quantity,
                     descuento: discountPerUnit * item.quantity
                 };
@@ -540,7 +542,7 @@ const CashRegister = () => {
                                                     <img
                                                         src={p.imagen || 'https://placehold.co/400x300?text=Wurger'}
                                                         className="w-100 h-100 object-fit-cover"
-                                                        alt={p.nombreProducto}
+                                                        alt={p.nombre}
                                                         onError={(e) => {
                                                             e.target.src = 'https://placehold.co/400x300?text=Wurger';
                                                         }}
@@ -550,18 +552,15 @@ const CashRegister = () => {
                                                             {p.promoName}
                                                         </span>
                                                     )}
-                                                    <span className={`position-absolute bottom-0 end-0 m-2 badge ${p.stock > 5 ? 'bg-success' : 'bg-danger'}`}>
-                                                        Stock: {p.stock}
-                                                    </span>
                                                 </div>
                                                 <div className="p-3 d-flex flex-column flex-grow-1">
-                                                    <h6 className="fw-bold mb-1 text-truncate">{p.nombreProducto}</h6>
-                                                    <small className="text-muted d-block mb-2">{p.categoria?.nombreCategoria}</small>
+                                                    <h6 className="fw-bold mb-1 text-truncate">{p.nombre}</h6>
+                                                    <small className="text-muted d-block mb-2">{p.categoria}</small>
                                                     <div className="mt-auto">
                                                         {hasPromo ? (
                                                             <div className="d-flex align-items-baseline gap-2">
                                                                 <span className="fw-bold text-danger fs-5">
-                                                                    {formatCOP(p.precioVenta)}
+                                                                    {formatCOP(p.precio)}
                                                                 </span>
                                                                 <span className="text-decoration-line-through text-muted small">
                                                                     {formatCOP(p.precioOriginal)}
@@ -569,7 +568,7 @@ const CashRegister = () => {
                                                             </div>
                                                         ) : (
                                                             <span className="fw-bold text-primary fs-5">
-                                                                {formatCOP(p.precioVenta)}
+                                                                {formatCOP(p.precio)}
                                                             </span>
                                                         )}
                                                     </div>
@@ -679,13 +678,13 @@ const CashRegister = () => {
                                     <div className="col-6">
                                         <label className="form-label small text-muted mb-1">Paga Con (Efectivo)</label>
                                         <input 
-                                            type="number" 
+                                            type="text" 
+                                            inputMode="numeric"
                                             className="form-control form-control-sm" 
-                                            value={amountPaid}
+                                            value={amountPaid ? new Intl.NumberFormat('es-CO').format(String(amountPaid).replace(/\D/g, '')) : ''}
                                             onChange={handleAmountPaidChange}
                                             disabled={paymentMethod !== 'Efectivo'}
                                             placeholder="Monto"
-                                            min="0"
                                         />
                                     </div>
                                 </div>

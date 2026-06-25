@@ -43,11 +43,7 @@ public class UnidadMedidaService {
         unidad.setNombre(dto.getNombre());
         unidad.setCantidad(dto.getCantidad());
 
-        if (dto.getIdProducto() != null) {
-            Producto producto = productoRepository.findById(dto.getIdProducto())
-                    .orElseThrow(() -> new RuntimeException("Producto no encontrado ID: " + dto.getIdProducto()));
-            unidad.setProducto(producto);
-        }
+
 
         return unidadRepository.save(unidad);
     }

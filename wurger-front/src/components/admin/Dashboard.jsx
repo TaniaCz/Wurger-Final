@@ -29,8 +29,14 @@ const Dashboard = ({ onNavigate }) => {
                 fetch('http://localhost:8080/api/caja/activa'),
             ]);
 
-            const today = new Date().toISOString().split('T')[0];
-            const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+            const getLocalDateString = (date) => {
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                return `${year}-${month}-${day}`;
+            };
+            const today = getLocalDateString(new Date());
+            const weekAgo = getLocalDateString(new Date(Date.now() - 7 * 24 * 60 * 60 * 1000));
 
             let ventasHoy = 0, ventasSemana = 0, gastosHoy = 0;
             let pedidosPendientes = 0, productosStockBajo = 0, totalProductos = 0;

@@ -17,6 +17,7 @@ public class ProductoTerminadoDTO {
     private Integer stockMin;
     private Estado estado;
     private LocalDate fechaIngreso;
+    private String imagen;
 
     // IMPORTANTE: Para vincular con la tabla Producto
     private Integer idProducto;

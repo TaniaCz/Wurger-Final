@@ -20,4 +20,7 @@ public class ProductoDTO {
 
     // IMPORTANTE: Recibimos solo el ID
     private Integer idCategoria;
+    private Integer idProveedor;
+    private Integer idUnidad;
+    private LocalDate fechaVencimiento;
 }

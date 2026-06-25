@@ -49,13 +49,9 @@ public class ProductoTerminadoService {
         pt.setStockMin(dto.getStockMin());
         pt.setEstado(dto.getEstado());
         pt.setFechaIngreso(dto.getFechaIngreso());
+        pt.setImagen(dto.getImagen());
 
-        // Vinculación con Producto Padre
-        if (dto.getIdProducto() != null) {
-            Producto productoPadre = productoRepository.findById(dto.getIdProducto())
-                    .orElseThrow(() -> new RuntimeException("Producto padre no encontrado ID: " + dto.getIdProducto()));
-            pt.setProducto(productoPadre);
-        }
+
 
         return terminadoRepository.save(pt);
     }

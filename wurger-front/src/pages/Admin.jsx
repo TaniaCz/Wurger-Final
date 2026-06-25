@@ -11,6 +11,9 @@ import PromotionsManagement from '../components/admin/PromotionsManagement';
 import ExpensesManagement from '../components/admin/ExpensesManagement';
 import CashRegister from '../components/admin/CashRegister';
 import EmailCampaigns from '../components/admin/EmailCampaigns';
+import ProvidersManagement from '../components/admin/ProvidersManagement';
+import UnitsManagement from '../components/admin/UnitsManagement';
+import DishesManagement from '../components/admin/DishesManagement';
 
 function Admin() {
     const navigate = useNavigate();
@@ -52,16 +55,22 @@ function Admin() {
             case 'users': return <UserManagement />;
             case 'promotions': return <PromotionsManagement />;
             case 'campaigns': return <EmailCampaigns />;
+            case 'providers': return <ProvidersManagement />;
+            case 'units': return <UnitsManagement />;
+            case 'dishes': return <DishesManagement />;
             default: return <Dashboard onNavigate={setActiveView} />;
         }
     };
 
     const menuItems = [
         { id: 'dashboard', icon: 'bi-speedometer2', label: 'Panel Principal' },
-        { id: 'products', icon: 'bi-box-seam', label: 'Productos' },
+        { id: 'dishes', icon: 'bi-egg-fried', label: 'Platos / Menú' },
+        { id: 'products', icon: 'bi-box-seam', label: 'Insumos' },
         { id: 'orders', icon: 'bi-cart', label: 'Pedidos' },
         { id: 'caja', icon: 'bi-cash-coin', label: 'Caja POS' },
         { id: 'expenses', icon: 'bi-wallet2', label: 'Gastos' },
+        { id: 'providers', icon: 'bi-truck', label: 'Proveedores' },
+        { id: 'units', icon: 'bi-rulers', label: 'Unidades Medida' },
         { id: 'stock', icon: 'bi-exclamation-triangle', label: 'Stock' },
         { id: 'reports', icon: 'bi-bar-chart', label: 'Reportes' },
         { id: 'users', icon: 'bi-people', label: 'Usuarios' },

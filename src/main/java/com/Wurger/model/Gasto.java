@@ -34,4 +34,8 @@ public class Gasto {
 
     @Column(name = "id_caja_sesion")
     private Integer idCajaSesion;
+
+    @ManyToOne
+    @JoinColumn(name = "id_proveedor")
+    private Proveedor proveedor;
 }

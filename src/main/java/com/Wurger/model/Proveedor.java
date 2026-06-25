@@ -27,6 +27,9 @@ public class Proveedor {
     @Column(length = 100)
     private String direccion;
 
+    @Column(name = "categoria_proveedor", length = 150)
+    private String categoriaProveedor;
+
     @Enumerated(EnumType.STRING)
     @Column(length = 20)
     private Estado estado;

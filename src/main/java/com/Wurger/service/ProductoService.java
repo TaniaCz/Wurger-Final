@@ -5,6 +5,10 @@ import com.Wurger.model.CategoriaProducto;
 import com.Wurger.model.Producto;
 import com.Wurger.repository.CategoriaProductoRepository;
 import com.Wurger.repository.ProductoRepository;
+import com.Wurger.repository.ProveedorRepository;
+import com.Wurger.repository.UnidadMedidaRepository;
+import com.Wurger.model.Proveedor;
+import com.Wurger.model.UnidadMedida;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +23,12 @@ public class ProductoService {
 
     @Autowired
     private CategoriaProductoRepository categoriaRepository;
+
+    @Autowired
+    private ProveedorRepository proveedorRepository;
+
+    @Autowired
+    private UnidadMedidaRepository unidadMedidaRepository;
 
     public List<Producto> findAll() {
         return productoRepository.findAll();
@@ -49,7 +59,7 @@ public class ProductoService {
         producto.setStockMin(dto.getStockMin());
         producto.setStockMax(dto.getStockMax());
         producto.setPrecioCompra(dto.getPrecioCompra());
-        producto.setPrecioVenta(dto.getPrecioVenta());
+
         producto.setEstado(dto.getEstado());
         producto.setFechaIngreso(dto.getFechaIngreso());
         producto.setImagen(dto.getImagen());
@@ -60,6 +70,20 @@ public class ProductoService {
                     .orElseThrow(() -> new RuntimeException("Categoría no encontrada"));
             producto.setCategoria(cat);
         }
+
+        if (dto.getIdProveedor() != null) {
+            Proveedor prov = proveedorRepository.findById(dto.getIdProveedor())
+                    .orElseThrow(() -> new RuntimeException("Proveedor no encontrado"));
+            producto.setProveedor(prov);
+        }
+
+        if (dto.getIdUnidad() != null) {
+            UnidadMedida um = unidadMedidaRepository.findById(dto.getIdUnidad())
+                    .orElseThrow(() -> new RuntimeException("Unidad no encontrada"));
+            producto.setUnidad(um);
+        }
+
+        producto.setFechaVencimiento(dto.getFechaVencimiento());
 
         return productoRepository.save(producto);
     }

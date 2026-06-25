@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name = "producto_terminado")
@@ -43,11 +44,13 @@ public class ProductoTerminado {
     @Column(name = "fecha_ingreso")
     private LocalDate fechaIngreso;
 
-    // Relación con Producto
-    // Aquí NO usamos JsonIgnore porque es útil ver los datos del producto base.
-    @OneToOne
-    @JoinColumn(name = "id_producto")
-    private Producto producto;
+    @Column(length = 255)
+    private String imagen;
+
+    // Relación con Recetas
+    // Aquí NO usamos JsonIgnore porque es útil ver los ingredientes del plato.
+    @OneToMany(mappedBy = "productoTerminado", cascade = CascadeType.ALL)
+    private List<Receta> recetas;
 
     public enum Estado {
         Activo,

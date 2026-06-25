@@ -34,12 +34,12 @@ public class DetalleVenta {
     @JoinColumn(name = "id_venta", nullable = false)
     private Venta venta;
 
-    // Relación N:1 con Producto
+    // Relación N:1 con ProductoTerminado
     // @NotFound permite que el sistema continúe si el producto fue eliminado
     @ManyToOne
     @JoinColumn(name = "id_producto", nullable = false)
     @NotFound(action = NotFoundAction.IGNORE)
-    private Producto producto;
+    private ProductoTerminado productoTerminado;
 
     // Relación N:1 con Promocion (opcional)
     // Permite rastrear qué promoción se aplicó a este detalle

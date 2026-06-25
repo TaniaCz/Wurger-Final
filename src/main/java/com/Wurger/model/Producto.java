@@ -34,9 +34,6 @@ public class Producto {
     @Column(name = "precio_compra")
     private BigDecimal precioCompra;
 
-    @Column(name = "precio_venta")
-    private BigDecimal precioVenta;
-
     @Column(name = "tipo_producto", length = 50)
     private String tipoProducto;
 
@@ -47,6 +44,9 @@ public class Producto {
     @Column(name = "fecha_ingreso")
     private LocalDate fechaIngreso;
 
+    @Column(name = "fecha_vencimiento")
+    private LocalDate fechaVencimiento;
+
     @Column(name = "imagen", length = 500)
     private String imagen;
 
@@ -56,17 +56,21 @@ public class Producto {
     private CategoriaProducto categoria;
 
     // Aquí SÍ ponemos JsonIgnore para que no traiga listas infinitas
-    @OneToMany(mappedBy = "producto", cascade = CascadeType.ALL)
-    @JsonIgnore
-    private List<UnidadMedida> unidades;
+    @ManyToOne
+    @JoinColumn(name = "id_unidad")
+    private UnidadMedida unidad;
+
+    @ManyToOne
+    @JoinColumn(name = "id_proveedor")
+    private Proveedor proveedor;
 
     @OneToMany(mappedBy = "producto", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Movimiento> movimientos;
 
-    @OneToOne(mappedBy = "producto", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "producto", cascade = CascadeType.ALL)
     @JsonIgnore
-    private ProductoTerminado productoTerminado;
+    private List<Receta> recetas;
 
     @OneToMany(mappedBy = "producto", cascade = CascadeType.ALL)
     @JsonIgnore

@@ -168,10 +168,11 @@ const ClientDashboard = () => {
 
     const fetchProducts = async () => {
         try {
-            const response = await fetch('http://localhost:8080/api/productos');
+            const response = await fetch('http://localhost:8080/api/productos-terminados');
             if (response.ok) {
                 const data = await response.json();
-                setProducts(data);
+                // Ensure only active dishes are shown
+                setProducts(data.filter(p => p.estado === 'Activo'));
             }
         } catch (error) {
             console.error("Error fetching products:", error);
@@ -201,17 +202,17 @@ const ClientDashboard = () => {
     const getProductWithDiscount = (product) => {
         const promo = promotions.find(p => p.producto?.id === product.id);
         if (promo) {
-            let discountedPrice = product.precioVenta;
+            let discountedPrice = product.precio;
             if (promo.tipoDescuento === 'PORCENTAJE') {
-                discountedPrice = product.precioVenta * (1 - promo.descuento / 100);
+                discountedPrice = product.precio * (1 - promo.descuento / 100);
             } else {
-                discountedPrice = Math.max(0, product.precioVenta - promo.descuento);
+                discountedPrice = Math.max(0, product.precio - promo.descuento);
             }
 
             return {
                 ...product,
-                precioVenta: discountedPrice,
-                precioOriginal: product.precioVenta,
+                precio: discountedPrice,
+                precioOriginal: product.precio,
                 promoName: promo.nombre,
                 promoId: promo.id
             };
@@ -273,7 +274,7 @@ const ClientDashboard = () => {
             detalles: cart.map(item => {
                 const discountPerUnit = item.originalPrice ? (item.originalPrice - item.precio) : 0;
                 const detalle = {
-                    idProducto: item.id,
+                    idProductoTerminado: item.id,
                     cantidad: item.quantity,
                     descuento: discountPerUnit * item.quantity
                 };
@@ -495,7 +496,7 @@ const ClientDashboard = () => {
                                                                     <img
                                                                         src={product.imagen || 'https://placehold.co/600x400?text=Wurger'}
                                                                         className="img-fluid h-100 w-100 object-fit-cover"
-                                                                        alt={product.nombreProducto}
+                                                                        alt={product.nombre}
                                                                         onError={(e) => {
                                                                             e.target.src = 'https://placehold.co/600x400?text=Wurger';
                                                                         }}
@@ -506,14 +507,14 @@ const ClientDashboard = () => {
                                                                         <div className={`text-uppercase small fw-bold ${isPromo ? 'text-warning' : 'text-primary'} mb-1`} style={{ fontSize: '0.75rem', letterSpacing: '1px' }}>
                                                                             {promoName}
                                                                         </div>
-                                                                        <h4 className="card-title fw-bold mb-2 text-truncate" title={product.nombreProducto}>
-                                                                            {product.nombreProducto}
+                                                                        <h4 className="card-title fw-bold mb-2 text-truncate" title={product.nombre}>
+                                                                            {product.nombre}
                                                                         </h4>
                                                                     </div>
                                                                     <div className="mt-auto">
                                                                         <div className="d-flex align-items-end gap-2 mb-3">
                                                                             <span className="h3 mb-0 fw-bold text-primary">
-                                                                                {formatPrice(product.precioVenta)}
+                                                                                {formatPrice(product.precio)}
                                                                             </span>
                                                                             {product.precioOriginal && (
                                                                                 <span className="text-decoration-line-through text-muted mb-1">
@@ -533,8 +534,8 @@ const ClientDashboard = () => {
                                                                                 className="btn btn-primary rounded-pill px-4 py-2 hover-scale shadow-sm"
                                                                                 onClick={() => addToCart({
                                                                                     ...product,
-                                                                                    nombre: product.nombreProducto,
-                                                                                    precio: product.precioVenta,
+                                                                                    nombre: product.nombre,
+                                                                                    precio: product.precio,
                                                                                     originalPrice: product.precioOriginal,
                                                                                     promoId: product.promoId
                                                                                 })}
@@ -581,7 +582,7 @@ const ClientDashboard = () => {
 
                             {/* Categorías y Listado General */}
                             {Object.entries(products.reduce((acc, product) => {
-                                const categoryName = product.categoria?.nombreCategoria || 'Otras';
+                                const categoryName = product.categoria || 'Otras';
                                 if (!acc[categoryName]) {
                                     acc[categoryName] = [];
                                 }

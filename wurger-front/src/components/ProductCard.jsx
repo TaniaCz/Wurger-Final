@@ -23,14 +23,14 @@ const ProductCard = ({ product }) => {
                     <img
                         src={product.imagen || 'https://placehold.co/600x400?text=Wurger'}
                         className="w-100 h-100 object-fit-cover hover-scale"
-                        alt={product.nombreProducto}
+                        alt={product.nombre || product.nombreProducto}
                         onError={(e) => {
                             e.target.src = 'https://placehold.co/600x400?text=Wurger';
                         }}
                     />
                     
                     {/* Discount/Offer Badge */}
-                    {product.precioOriginal && product.precioOriginal > product.precioVenta && (
+                    {product.precioOriginal && product.precioOriginal > (product.precio || product.precioVenta) && (
                         <div className="position-absolute top-0 end-0 m-3 z-2">
                             <span className="badge bg-danger rounded-pill px-3 py-2 shadow-sm animate-pulse small">
                                 ¡OFERTA!
@@ -44,13 +44,13 @@ const ProductCard = ({ product }) => {
                     <div className="mb-3">
                         <span className="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-10 mb-2 py-1 px-2 text-uppercase fw-bold" 
                               style={{ fontSize: '0.65rem', letterSpacing: '0.5px' }}>
-                            {product.categoria?.nombreCategoria || 'General'}
+                            {product.categoria?.nombreCategoria || product.categoria || 'General'}
                         </span>
-                        <h5 className="card-title fw-bold mb-1 text-truncate" title={product.nombreProducto}>
-                            {product.nombreProducto}
+                        <h5 className="card-title fw-bold mb-1 text-truncate" title={product.nombre || product.nombreProducto}>
+                            {product.nombre || product.nombreProducto}
                         </h5>
                         <p className="text-muted small text-truncate mb-0" style={{ fontSize: '0.8rem' }}>
-                            {product.stock > 0 ? (
+                            {product.estado === 'Activo' || product.stock > 0 ? (
                                 <span className="text-success"><i className="bi bi-check2-circle me-1"></i>Disponible</span>
                             ) : (
                                 <span className="text-danger"><i className="bi bi-x-circle me-1"></i>Agotado</span>
@@ -61,25 +61,25 @@ const ProductCard = ({ product }) => {
                     {/* Bottom row: Pricing & Add to Cart button */}
                     <div className="mt-auto pt-3 border-top border-secondary-subtle d-flex justify-content-between align-items-center">
                         <div>
-                            {product.precioOriginal && product.precioOriginal > product.precioVenta && (
+                            {product.precioOriginal && product.precioOriginal > (product.precio || product.precioVenta) && (
                                 <small className="text-decoration-line-through text-muted d-block" style={{ fontSize: '0.75rem' }}>
                                     {formatCOP(product.precioOriginal)}
                                 </small>
                             )}
                             <span className="h5 mb-0 fw-bold" style={{ color: 'var(--primary-color)' }}>
-                                {formatCOP(product.precioVenta)}
+                                {formatCOP(product.precio || product.precioVenta)}
                             </span>
                         </div>
                         <button
                             className="btn btn-primary rounded-pill px-3 py-2 shadow-sm d-flex align-items-center gap-1 hover-scale"
                             onClick={() => addToCart({
                                 ...product,
-                                nombre: product.nombreProducto,
-                                precio: product.precioVenta,
+                                nombre: product.nombre || product.nombreProducto,
+                                precio: product.precio || product.precioVenta,
                                 originalPrice: product.precioOriginal,
                                 promoId: product.promoId
                             })}
-                            disabled={product.stock <= 0}
+                            disabled={product.estado === 'Inactivo' || (product.stock !== undefined && product.stock <= 0)}
                             style={{ fontSize: '0.85rem' }}
                         >
                             <span>Agregar</span>
