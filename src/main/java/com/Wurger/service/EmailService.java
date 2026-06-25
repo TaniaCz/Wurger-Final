@@ -311,8 +311,10 @@ public class EmailService {
             helper.setSubject(asunto);
             helper.setText(html, true);
             mailSender.send(mensaje);
+            System.out.println("✅ Correo enviado exitosamente a: " + destinatario);
         } catch (MessagingException e) {
-            throw new RuntimeException("Error al enviar el correo: " + e.getMessage(), e);
+            System.err.println("❌ Error al enviar correo a " + destinatario + ": " + e.getMessage());
+            e.printStackTrace();
         }
     }
 }
